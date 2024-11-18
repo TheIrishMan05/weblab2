@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-@WebServlet("/areaChecker")
+@WebServlet("/areaCheck")
 @Log4j2
 public class AreaCheckServlet extends HttpServlet {
     @Override
@@ -55,7 +55,10 @@ public class AreaCheckServlet extends HttpServlet {
 
         session.setAttribute("allPoints", mapper.writeValueAsString(points));
 
-        resp.sendRedirect(req.getContextPath()+"/result.jsp");
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(mapper.writeValueAsString(points));
+        resp.sendRedirect(req.getContextPath() + "/result.jsp");
     }
 
     private boolean validateParams(Point point) {

@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebFilter("/areaChecker")
+@WebFilter("/areaCheck")
 public class AreaFilter implements Filter {
 
     @Override
