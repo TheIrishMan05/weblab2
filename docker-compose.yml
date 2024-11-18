@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  wildfly:
+    build: .
+    container_name: wildfly-container
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    environment:
+      - JAVA_OPTS=-Xms64m -Xmx512m
+      - DISABLE_LOGS=false
