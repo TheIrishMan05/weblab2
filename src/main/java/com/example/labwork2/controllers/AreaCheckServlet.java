@@ -55,9 +55,7 @@ public class AreaCheckServlet extends HttpServlet {
 
         session.setAttribute("allPoints", mapper.writeValueAsString(points));
 
-        req.setAttribute("point", point);
-
-        req.getRequestDispatcher("views/result.jsp").forward(req, resp);
+        resp.sendRedirect(req.getContextPath()+"/result.jsp");
     }
 
     private boolean validateParams(Point point) {
