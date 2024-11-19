@@ -84,8 +84,9 @@
                 Введите Y:
             </label><input id="y_input" maxlength="6" name="Y-input" placeholder="не менее -3 и не более 5" required
                            type="text">
-            <label for="r-input">Выберите R:</label>
+            <label>
                 <select id="r-input" onchange="setValueR()">
+                    <option value="" selected disabled>Выберите R</option>
                     <option class="illuminated animated" id="r_1" name="R-option" value="1">
                         1
                     </option>
@@ -102,11 +103,13 @@
                         5
                     </option>
                 </select>
+            </label>
             <div>
                 <button id="check-button">Проверить данные</button>
             </div>
         </div>
         <div id="result-text"></div>
+        <jsp:include page="result.jsp"/>
     </div>
 </div>
 <footer>

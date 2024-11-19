@@ -187,10 +187,10 @@ input {
 
 
 
-input[name=X-checkbox] {
+input[type=checkbox] {
     float: revert;
     width: 50px;
-    color: black;
+    background-color: black;
 }
 
 input,

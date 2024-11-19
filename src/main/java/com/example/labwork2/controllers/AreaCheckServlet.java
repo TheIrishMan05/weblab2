@@ -3,10 +3,8 @@ package com.example.labwork2.controllers;
 
 import com.example.labwork2.models.Point;
 import com.example.labwork2.utils.AreaChecker;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,19 +23,17 @@ import java.util.Objects;
 @Log4j2
 public class AreaCheckServlet extends HttpServlet {
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Point point;
         AreaChecker checker = new AreaChecker();
         try {
             point = parseRequest(req);
             if (point == null || !validateParams(point)) {
-                log.warn("Некорректные данные или отсутствие координат точки");
-                req.getRequestDispatcher("views/index.jsp").forward(req, resp);
-                return;
+                log.warn("Полученные данные не валидны.");
             }
-        } catch (JsonProcessingException | NumberFormatException e) {
+        } catch (Exception e) {
             log.error("Ошибка обработки запроса", e);
-            req.getRequestDispatcher("views/index.jsp").forward(req, resp);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid input");
             return;
         }
 
@@ -46,24 +42,26 @@ public class AreaCheckServlet extends HttpServlet {
         Objects.requireNonNull(point).setHit(checker.checkArea(point));
 
         HttpSession session = req.getSession();
+        String json = (String) session.getAttribute("allPoints");
 
         ObjectMapper mapper = new ObjectMapper();
 
-        String json = (String) session.getAttribute("allPoints");
+        List<Point> allPoints = mapper.readValue(json, new TypeReference<>() {});
+        if(allPoints == null) {
+            allPoints = new ArrayList<>();
+        }
 
-        List<Point> points = mapper.readValue(json, new TypeReference<>() {});
-
-        session.setAttribute("allPoints", mapper.writeValueAsString(points));
+        allPoints.add(point);
+        session.setAttribute("allPoints", allPoints);
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.getWriter().write(mapper.writeValueAsString(points));
-        resp.sendRedirect(req.getContextPath() + "/result.jsp");
+        resp.getWriter().write(mapper.writeValueAsString(allPoints));
     }
 
     private boolean validateParams(Point point) {
-        ArrayList<Integer> listR = (ArrayList<Integer>) Arrays.asList(new Integer[]{1, 2, 3, 4, 5});
-        if (listR.stream().noneMatch(r -> r == point.getR())) {
+        int[] arrayR = {1, 2, 3, 4, 5};
+        if (Arrays.stream(arrayR).noneMatch(r -> r == point.getR())) {
             return false;
         } else if (point.getX() < -point.getR() || point.getX() > point.getR()) {
             return false;

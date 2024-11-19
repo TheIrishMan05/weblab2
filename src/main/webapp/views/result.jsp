@@ -1,6 +1,8 @@
 <%@ page import="com.example.labwork2.models.Point" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Locale" %>
+<%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
+<%@ page import="com.fasterxml.jackson.core.type.TypeReference" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <html>
 <head>
@@ -12,7 +14,6 @@
     <title>Веб-программирование: Лабораторная работа №2</title>
 </head>
 <body>
-<div id="input-container">
 <table id = "output-table">
     <thead>
     <tr>
@@ -20,20 +21,24 @@
         <th>Y</th>
         <th>R</th>
         <th>Result</th>
-        <th>Current time</th>
     </tr>
     </thead>
     <tbody>
     <%
-        List<Point> points = (List<Point>) request.getSession().getAttribute("allPoints");
-        if (points == null) {
+
+        String json = (String) session.getAttribute("allPoints");
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        List<Point> allPoints = mapper.readValue(json, new TypeReference<>() {});
+        if (allPoints == null) {
     %>
     <tr id="no-data">
-        Нет данных
+        <td colspan="6">Нет данных</td>
     </tr>
     <%
     } else {
-        for(Point point : points) {
+        for(Point point : allPoints) {
     %>
     <tr>
         <td><%=String.format(Locale.US, "%.4f", point.getX())%></td>
@@ -47,9 +52,5 @@
     %>
     </tbody>
 </table>
-</div>
 </body>
-<script type="text/javascript">
-    <%@include file="../scripts/script.js" %>
-</script>
 </html>
