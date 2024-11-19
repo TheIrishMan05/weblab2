@@ -187,7 +187,7 @@ input {
 
 
 
-input[type=checkbox] {
+input[name=X-checkbox] {
     float: revert;
     width: 50px;
     color: black;
@@ -261,13 +261,8 @@ fieldset{
     align-content: center;
     grid-template-columns: 1fr 1fr 1fr;
 }
-
-#r-input {
+select {
     width: 50%;
-    height: 15px;
-    border-collapse: collapse;
-    align-self: center;
-    padding: 20px;
 }
 
 hr {

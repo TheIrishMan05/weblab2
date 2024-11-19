@@ -170,14 +170,11 @@ function manageData() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                x: parseInt(value_X),
-                y: parseFloat(value_Y.toFixed(4)),
-                r: parseInt(value_R)
+                x: value_X,
+                y: value_Y,
+                r: value_R
             })
         }).then((response) => {
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
             return response.json();
         }).then((json) => {
             updateTable([json["x"], json["y"], json["r"], json["isHit"]]);

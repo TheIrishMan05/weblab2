@@ -80,11 +80,11 @@
                 </label>
             </fieldset>
 
-            Введите Y:
             <label for="y_input">
+                Введите Y:
             </label><input id="y_input" maxlength="6" name="Y-input" placeholder="не менее -3 и не более 5" required
                            type="text">
-            <label>
+            <label for="r-input">Выберите R:</label>
                 <select id="r-input" onchange="setValueR()">
                     <option class="illuminated animated" id="r_1" name="R-option" value="1">
                         1
@@ -102,7 +102,6 @@
                         5
                     </option>
                 </select>
-            </label>
             <div>
                 <button id="check-button">Проверить данные</button>
             </div>
