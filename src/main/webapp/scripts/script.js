@@ -1,5 +1,4 @@
 let value_X, value_Y, value_R;
-let points = [];
 const CANVAS = document.getElementById("myCanvas");
 const CTX = CANVAS.getContext("2d");
 const INPUT = document.querySelector("input[type=text]");
@@ -9,6 +8,12 @@ INPUT.oninput = setValueY;
 document.querySelector("canvas")
     .addEventListener("click", (event) => handleImageClick(CANVAS, event));
 draw();
+window.addEventListener("load", () => {
+    const savedPoints = JSON.parse(localStorage.getItem("points")) || [];
+    if (savedPoints.length) {
+        redrawPoints();
+    }
+});
 CHECKBOXES.forEach(b => b.addEventListener("change", setValueX));
 
 function setValueX(event) {
@@ -154,15 +159,12 @@ function handleImageClick(canvas, event) {
 }
 
 
-function redrawCanvas(){
-    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
-    draw();
-    points.forEach((point) => drawPoint(point.x, point.y, point.r))
+function redrawPoints(){
+    points.forEach((point) => drawPoint(point["x"], point["y"], point["r"]));
 }
 
 
 function manageData() {
-    console.log(value_X, value_Y, value_R);
     if (validateX() && validateY() && validateR()) {
         fetch('/labwork2/controller', {
             method: 'POST',
@@ -174,17 +176,17 @@ function manageData() {
                 y: value_Y,
                 r: value_R
             })
-        }).then((response) => {
-            return response.json();
-        }).then((json) => {
-            updateTable([json["x"], json["y"], json["r"], json["isHit"]]);
-            drawPoint(value_X, value_Y, value_R);
-            points.push({
-                x: value_X,
-                y: value_Y,
-                r: value_R,
-            })
-            redrawCanvas();
+        }).then(response => response.json())
+            .then((json) => {
+            updateTable([json["x"], json["y"], json["r"], json["hit"]]);
+            drawPoint(json["x"], json["y"], json["r"]);
+            let point = {
+                x: json["x"],
+                y: json["y"],
+                r: json["r"],
+            }
+            savePoint(point);
+            redrawPoints();
         }).catch((e) => {
             document.getElementById("result-text").innerText = "error: " + e.message;
             document.getElementById("result-text").classList.add("errorStub");
@@ -207,28 +209,33 @@ function manageData() {
                 .remove(...document.getElementById("result-text").classList);
         }, 1000);
     }
+}
 
-    function updateTable(data) {
-        let table = document.getElementsByTagName('tbody')[0];
-        let row = table.insertRow();
-        let noDataRow = document.getElementById("no-data");
-        if(noDataRow) {
-            noDataRow.remove();
-        }
-        data.forEach((element) => {
-            let cell = row.insertCell();
-            cell.innerText = element;
-        });
-        document.getElementById("result-text").innerText = "Data has been successfully processed.";
-        document.getElementById("result-text").classList.add("outputStub");
-        document.getElementById("result-text").style.display = "flex";
-        setTimeout(() => {
-                document.getElementById("result-text").style.display = "none";
-                document.getElementById("result-text").classList.remove(...document.getElementById("result-text").classList);
-            },
-            1000);
+function savePoint(point){
+    let points = JSON.parse(localStorage.getItem("points")) || [];
+    points.push(point);
+    localStorage.setItem("points", JSON.stringify(points));
+}
 
+function updateTable(data) {
+    let table = document.getElementsByTagName('tbody')[0];
+    let row = table.insertRow();
+    let noDataRow = document.getElementById("no-data");
+    if(noDataRow){
+        noDataRow.remove();
     }
+    data.forEach((element) => {
+        let cell = row.insertCell();
+        cell.innerText = element;
+    });
+    document.getElementById("result-text").innerText = "Data has been successfully processed.";
+    document.getElementById("result-text").classList.add("outputStub");
+    document.getElementById("result-text").style.display = "flex";
+    setTimeout(() => {
+            document.getElementById("result-text").style.display = "none";
+            document.getElementById("result-text").classList.remove(...document.getElementById("result-text").classList);
+        },
+        1000);
 }
 
 function drawPoint(x, y, r) {

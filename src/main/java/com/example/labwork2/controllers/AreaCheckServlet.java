@@ -3,7 +3,6 @@ package com.example.labwork2.controllers;
 
 import com.example.labwork2.models.Point;
 import com.example.labwork2.utils.AreaChecker;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -29,24 +28,20 @@ public class AreaCheckServlet extends HttpServlet {
         try {
             point = parseRequest(req);
             if (point == null || !validateParams(point)) {
-                log.warn("Полученные данные не валидны.");
+                log.warn("Полученные данные не валидны. Промах гарантирован!");
             }
         } catch (Exception e) {
             log.error("Ошибка обработки запроса", e);
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid input");
             return;
         }
+        Objects.requireNonNull(point).setHit(checker.checkArea(point));
 
         log.info("Обработка точки: {}", point);
 
-        Objects.requireNonNull(point).setHit(checker.checkArea(point));
-
         HttpSession session = req.getSession();
-        String json = (String) session.getAttribute("allPoints");
+        List<Point> allPoints = (List<Point>) session.getAttribute("allPoints");
 
-        ObjectMapper mapper = new ObjectMapper();
-
-        List<Point> allPoints = mapper.readValue(json, new TypeReference<>() {});
         if(allPoints == null) {
             allPoints = new ArrayList<>();
         }
@@ -56,7 +51,8 @@ public class AreaCheckServlet extends HttpServlet {
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.getWriter().write(mapper.writeValueAsString(allPoints));
+        resp.getWriter().write(new ObjectMapper().writeValueAsString(point));
+        log.info("Object of point was sent back: {}", point.toString());
     }
 
     private boolean validateParams(Point point) {
@@ -70,7 +66,6 @@ public class AreaCheckServlet extends HttpServlet {
 
     private Point parseRequest(HttpServletRequest request)
             throws NumberFormatException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
         StringBuilder builder = new StringBuilder();
         String line;
 
@@ -82,6 +77,6 @@ public class AreaCheckServlet extends HttpServlet {
 
         String json = builder.toString();
 
-        return mapper.readValue(json, Point.class);
+        return new ObjectMapper().readValue(json, Point.class);
     }
 }

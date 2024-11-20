@@ -23,7 +23,7 @@ public class AreaFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         Object controllerAttribute = request.getAttribute("controller");
-        if (controllerAttribute != null && controllerAttribute.equals("true")) {
+        if (controllerAttribute != null && controllerAttribute.equals(true)) {
             filterChain.doFilter(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");

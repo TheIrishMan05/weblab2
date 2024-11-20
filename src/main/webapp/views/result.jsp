@@ -1,9 +1,7 @@
 <%@ page import="com.example.labwork2.models.Point" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Locale" %>
-<%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
-<%@ page import="com.fasterxml.jackson.core.type.TypeReference" %>
-<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <html>
 <head>
     <meta content="Машкин Григорий Андреевич" name="author">
@@ -25,20 +23,15 @@
     </thead>
     <tbody>
     <%
-
-        String json = (String) session.getAttribute("allPoints");
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        List<Point> allPoints = mapper.readValue(json, new TypeReference<>() {});
-        if (allPoints == null) {
+        List<Point> points = (List<Point>) request.getSession().getAttribute("allPoints");
+        if (points == null || points.isEmpty()) {
     %>
     <tr id="no-data">
         <td colspan="6">Нет данных</td>
     </tr>
     <%
     } else {
-        for(Point point : allPoints) {
+        for(Point point : points) {
     %>
     <tr>
         <td><%=String.format(Locale.US, "%.4f", point.getX())%></td>

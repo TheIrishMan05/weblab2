@@ -5,7 +5,6 @@ import lombok.*;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
 @NoArgsConstructor
 public class Point {
     private double x;
@@ -13,4 +12,8 @@ public class Point {
     private double r;
     private boolean hit;
 
+    @Override
+    public String toString() {
+        return "{x: " + x + ", y: " + y + ", r: " + r + ", isHit: " + hit + "}";
+    }
 }

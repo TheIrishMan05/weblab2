@@ -1,3 +1,5 @@
+<%@ page import="com.example.labwork2.models.Point" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="ru-RU">
@@ -109,12 +111,12 @@
             </div>
         </div>
         <div id="result-text"></div>
-        <jsp:include page="result.jsp"/>
     </div>
 </div>
 <footer>
     2024
 </footer>
+<jsp:include page="result.jsp"/>
 </body>
 <script type="text/javascript">
     <%@include file="../scripts/script.js" %>
