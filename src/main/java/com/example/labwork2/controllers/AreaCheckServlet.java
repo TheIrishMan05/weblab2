@@ -20,6 +20,7 @@ import java.util.Objects;
 @WebServlet("/areaCheck")
 @Log4j2
 public class AreaCheckServlet extends HttpServlet {
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Point point;
@@ -37,18 +38,13 @@ public class AreaCheckServlet extends HttpServlet {
         Objects.requireNonNull(point).setHit(checker.checkArea(point));
 
         log.info("Обработка точки: {}", point);
-
         HttpSession session = req.getSession();
         PointDao pointsBean = (PointDao) session.getAttribute("pointsBean");
-
-
-        if(pointsBean == null) {
+        if (pointsBean == null) {
             pointsBean = new PointDao();
         }
-
         pointsBean.insert(point);
         session.setAttribute("pointsBean", pointsBean);
-
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().write(new ObjectMapper().writeValueAsString(point));

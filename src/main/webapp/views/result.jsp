@@ -1,6 +1,6 @@
-<%@ page import="com.example.labwork2.models.PointDao" %>
 <%@ page import="com.example.labwork2.models.Point" %>
 <%@ page import="java.util.Locale" %>
+<%@ page import="com.example.labwork2.models.PointDao" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <html>
 <head>
@@ -27,7 +27,7 @@
         if (pointsBean == null || pointsBean.getPoints().isEmpty()) {
     %>
     <tr id="no-data">
-        <td colspan="6">Нет данных</td>
+        <td colspan="4">Нет данных</td>
     </tr>
     <%
         } else {
