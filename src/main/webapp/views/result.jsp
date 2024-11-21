@@ -1,7 +1,7 @@
+<%@ page import="com.example.labwork2.models.PointDao" %>
 <%@ page import="com.example.labwork2.models.Point" %>
-<%@ page import="java.util.List" %>
 <%@ page import="java.util.Locale" %>
-<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <html>
 <head>
     <meta content="Машкин Григорий Андреевич" name="author">
@@ -23,15 +23,15 @@
     </thead>
     <tbody>
     <%
-        List<Point> points = (List<Point>) request.getSession().getAttribute("allPoints");
-        if (points == null || points.isEmpty()) {
+        PointDao pointsBean = (PointDao) session.getAttribute("pointsBean");
+        if (pointsBean == null || pointsBean.getPoints().isEmpty()) {
     %>
     <tr id="no-data">
         <td colspan="6">Нет данных</td>
     </tr>
     <%
-    } else {
-        for(Point point : points) {
+        } else {
+            for(Point point : pointsBean.getPoints()) {
     %>
     <tr>
         <td><%=String.format(Locale.US, "%.4f", point.getX())%></td>

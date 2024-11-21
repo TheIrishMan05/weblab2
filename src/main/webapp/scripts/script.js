@@ -2,16 +2,21 @@ let value_X, value_Y, value_R;
 const CANVAS = document.getElementById("myCanvas");
 const CTX = CANVAS.getContext("2d");
 const INPUT = document.querySelector("input[type=text]");
-const CHECKBOXES = document.querySelectorAll("input[type=checkbox]")
+const CHECKBOXES = document.querySelectorAll("input[type=checkbox]");
+const SAVED_POINTS = JSON.parse(localStorage.getItem("points")) || [];
+let tableBody = document.querySelector("tbody");
+let noDataRow = document.getElementById("no-data");
 document.getElementById("check-button").onclick = manageData;
 INPUT.oninput = setValueY;
 document.querySelector("canvas")
     .addEventListener("click", (event) => handleImageClick(CANVAS, event));
 draw();
 window.addEventListener("load", () => {
-    const savedPoints = JSON.parse(localStorage.getItem("points")) || [];
-    if (savedPoints.length) {
-        redrawPoints();
+    if(noDataRow){
+       localStorage.clear();
+    }
+    else if (Array.isArray(SAVED_POINTS) && SAVED_POINTS.length > 0) {
+        redrawPoints(SAVED_POINTS);
     }
 });
 CHECKBOXES.forEach(b => b.addEventListener("change", setValueX));
@@ -31,6 +36,7 @@ function setValueR() {
     value_R = document.getElementById("r-input").options[document.getElementById("r-input").
         options.selectedIndex].value;
     draw();
+    redrawPoints(SAVED_POINTS);
 }
 
 function draw() {
@@ -159,8 +165,13 @@ function handleImageClick(canvas, event) {
 }
 
 
-function redrawPoints(){
-    points.forEach((point) => drawPoint(point["x"], point["y"], point["r"]));
+function redrawPoints(points){
+    if (!points) return;
+    points.forEach((point) => {
+        if(point && "x" in point && "y" in point && "r" in point){
+            drawPoint(point["x"], point["y"], point["r"]);
+        }
+    });
 }
 
 
@@ -186,7 +197,7 @@ function manageData() {
                 r: json["r"],
             }
             savePoint(point);
-            redrawPoints();
+            redrawPoints(SAVED_POINTS);
         }).catch((e) => {
             document.getElementById("result-text").innerText = "error: " + e.message;
             document.getElementById("result-text").classList.add("errorStub");
@@ -218,9 +229,7 @@ function savePoint(point){
 }
 
 function updateTable(data) {
-    let table = document.getElementsByTagName('tbody')[0];
-    let row = table.insertRow();
-    let noDataRow = document.getElementById("no-data");
+    let row = tableBody.insertRow();
     if(noDataRow){
         noDataRow.remove();
     }

@@ -2,6 +2,7 @@ package com.example.labwork2.controllers;
 
 
 import com.example.labwork2.models.Point;
+import com.example.labwork2.models.PointDao;
 import com.example.labwork2.utils.AreaChecker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,9 +14,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 @WebServlet("/areaCheck")
@@ -40,14 +39,15 @@ public class AreaCheckServlet extends HttpServlet {
         log.info("Обработка точки: {}", point);
 
         HttpSession session = req.getSession();
-        List<Point> allPoints = (List<Point>) session.getAttribute("allPoints");
+        PointDao pointsBean = (PointDao) session.getAttribute("pointsBean");
 
-        if(allPoints == null) {
-            allPoints = new ArrayList<>();
+
+        if(pointsBean == null) {
+            pointsBean = new PointDao();
         }
 
-        allPoints.add(point);
-        session.setAttribute("allPoints", allPoints);
+        pointsBean.insert(point);
+        session.setAttribute("pointsBean", pointsBean);
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
