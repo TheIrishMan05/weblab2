@@ -37,7 +37,7 @@
         <td><%=String.format(Locale.US, "%.4f", point.getX())%></td>
         <td><%=String.format(Locale.US, "%.4f", point.getY())%></td>
         <td><%=String.format(Locale.US, "%.4f", point.getR())%></td>
-        <td><%=point.isHit() ? "Есть пробитие" : "Нет пробития"%></td>
+        <td><%=point.isHit()%></td>
     </tr>
     <%
             }
