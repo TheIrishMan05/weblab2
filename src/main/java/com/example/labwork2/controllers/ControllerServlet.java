@@ -18,7 +18,6 @@ public class ControllerServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("fromController", true);
-
         req.getRequestDispatcher("/areaCheck").forward(req, resp);
     }
 }

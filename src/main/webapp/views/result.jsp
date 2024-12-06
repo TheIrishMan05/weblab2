@@ -1,6 +1,6 @@
 <%@ page import="com.example.labwork2.models.Point" %>
 <%@ page import="java.util.Locale" %>
-<%@ page import="com.example.labwork2.models.PointDao" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <html>
 <head>
@@ -23,15 +23,15 @@
     </thead>
     <tbody>
     <%
-        PointDao pointsBean = (PointDao) session.getAttribute("pointsBean");
-        if (pointsBean == null || pointsBean.getPoints().isEmpty()) {
+        List<Point> points = (List<Point>) session.getAttribute("points");
+        if (points == null || points.isEmpty()) {
     %>
     <tr id="no-data">
         <td colspan="4">Нет данных</td>
     </tr>
     <%
         } else {
-            for(Point point : pointsBean.getPoints()) {
+            for(Point point : points) {
     %>
     <tr>
         <td><%=String.format(Locale.US, "%.4f", point.getX())%></td>
